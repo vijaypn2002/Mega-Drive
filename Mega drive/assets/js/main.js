@@ -120,6 +120,70 @@ const sr = ScrollReveal({
     // reset: true
 })
 
+
+document.addEventListener("DOMContentLoaded", () => {
+    const wrapper = document.getElementById("testimonial-wrapper");
+    const next = document.getElementById("next");
+    const prev = document.getElementById("prev");
+    const cards = document.querySelectorAll(".testimonial__card");
+    const totalCards = cards.length;
+    const cardsPerView = 3;
+
+    // Clone cards for infinite loop
+    for (let i = 0; i < cardsPerView; i++) {
+        wrapper.appendChild(cards[i].cloneNode(true));
+        wrapper.insertBefore(
+            cards[totalCards - 1 - i].cloneNode(true),
+            wrapper.firstChild
+        );
+    }
+
+    let currentIndex = cardsPerView;
+    const cardWidth = cards[0].offsetWidth + 32; // Include margin
+
+    // Set initial position
+    wrapper.style.transform = `translateX(${-cardWidth * currentIndex}px)`;
+
+    const updatePosition = () => {
+        wrapper.style.transition = "transform 0.5s ease-in-out";
+        wrapper.style.transform = `translateX(${-cardWidth * currentIndex}px)`;
+    };
+
+    const handleNext = () => {
+        currentIndex++;
+        updatePosition();
+        if (currentIndex === totalCards + cardsPerView) {
+            setTimeout(() => {
+                wrapper.style.transition = "none";
+                currentIndex = cardsPerView;
+                wrapper.style.transform = `translateX(${-cardWidth * currentIndex}px)`;
+            }, 500);
+        }
+    };
+
+    const handlePrev = () => {
+        currentIndex--;
+        updatePosition();
+        if (currentIndex < cardsPerView) {
+            setTimeout(() => {
+                wrapper.style.transition = "none";
+                currentIndex = totalCards;
+                wrapper.style.transform = `translateX(${-cardWidth * currentIndex}px)`;
+            }, 500);
+        }
+    };
+
+    next.addEventListener("click", handleNext);
+    prev.addEventListener("click", handlePrev);
+});
+
+
+
+
+
+
+
+
 sr.reveal(`.home__data`)
 sr.reveal(`.home__img`, {delay: 500})
 sr.reveal(`.home__social`, {delay: 600})
